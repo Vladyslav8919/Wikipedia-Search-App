@@ -198,3 +198,25 @@ body {
     padding-right: 20px;
   }
 }
+
+.pagination {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+
+  margin-bottom: 15px;
+}
+
+.pagination button {
+  background-color: #4c6ef5;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 5px 2px;
+  cursor: pointer;
+}
+
+.pagination .btn-num--pages {
+  background-color: transparent;
+  color: black;
+}
