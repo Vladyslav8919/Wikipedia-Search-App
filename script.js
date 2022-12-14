@@ -22,21 +22,17 @@ const handleSubmit = async function (e) {
       alert("No results found. Please try another keywords");
       return;
     }
-
-    // displayResults(results.query.search);
   } catch (err) {
     console.log(err.message);
     alert("Failed to search Wikipedia");
   }
   spinner.classList.add("hidden");
-
-  // });
 };
 
 const searchWikipedia = async function (query) {
   try {
     const response = await fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&origin=*&srlimit=20&srsearch=${query}`
+      `https://en.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&origin=*&srlimit=50&srsearch=${query}`
     );
 
     if (!response.ok) throw Error(response.statusText);
@@ -71,7 +67,6 @@ const displayResults = function (results, markup) {
     );
   });
   console.log(markup);
-  // pagination.insertAdjacentHTML("beforeend", markup);
 };
 
 form.addEventListener("submit", handleSubmit);
@@ -88,16 +83,16 @@ const numberOfPages = function (results) {
 };
 
 const buildPage = function (results, curPage = 1) {
-  const numPages = numberOfPages(results);
-
   const trimStart = (curPage - 1) * numberPerPage;
   const trimEnd = trimStart + numberPerPage;
   const currentResults = results.slice(trimStart, trimEnd);
 
   pagination.innerHTML = "";
-  const markup = generateMarkup(numPages);
-  pagination.insertAdjacentHTML("beforeend", markup);
   searchResults.innerHTML = "";
+
+  const markup = generateMarkup(numberOfPages(results));
+
+  pagination.insertAdjacentHTML("beforeend", markup);
   displayResults(currentResults, markup);
 };
 
@@ -110,10 +105,8 @@ const generateMarkup = function (numPages) {
       }" class="btn--inline pagination__btn--next btn--pagination_start">
             <span>Page ${curPage + 1}</span>
           </button>
-
       `;
   }
-
   // Last page
   if (curPage === numPages && numPages > 1) {
     return `
@@ -143,9 +136,8 @@ const generateMarkup = function (numPages) {
           </button>
       `;
   }
-
   // Page 1, and there are NO other pages
-  // return "";
+  return "";
 };
 
 const handleClick = function (results) {
@@ -155,18 +147,9 @@ const handleClick = function (results) {
     if (!btn) return;
 
     const goToPage = +btn.dataset.goto;
+
     curPage = goToPage;
 
     buildPage(results, goToPage);
   });
 };
-
-// const controlPagination = function (goToPage) {
-//   buildPage();
-// };
-
-// addHandlerClick(controlPagination);
-
-// const buildPagination = function (numPages) {
-//   pagination.insertAdjacentHTML();
-// };
